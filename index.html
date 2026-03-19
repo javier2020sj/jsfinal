@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ecommerce</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Mi Tienda</a>
+
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarContent"
+        aria-controls="navbarContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item me-3">
+            <a class="nav-link" href="#form-section">Formulario</a>
+          </li>
+          <li class="nav-item me-3">
+            <a class="nav-link" href="#shop-section">Productos</a>
+          </li>
+          <li class="nav-item">
+            <button id="btnCart" class="btn btn-warning position-relative" type="button">
+              Carrito 🛒
+              <span
+                id="cartCount"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge"
+              >
+                0
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <!-- FORMULARIO -->
+    <section id="form-section" class="mb-5">
+      <div class="section-card">
+        <div class="row mb-4">
+          <div class="col">
+            <h2 class="mb-2">Datos del usuario</h2>
+            <p class="text-muted mb-0">
+              Completa tus datos para continuar al ecommerce.
+            </p>
+          </div>
+        </div>
+
+        <form id="userForm" novalidate>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombre" />
+              <div class="invalid-feedback">Ingresa un nombre válido.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="apellido" class="form-label">Apellido</label>
+              <input type="text" class="form-control" id="apellido" />
+              <div class="invalid-feedback">Ingresa un apellido válido.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="email" class="form-label">Dirección de mail</label>
+              <input type="email" class="form-control" id="email" />
+              <div class="invalid-feedback">Ingresa un email válido.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="telefono" class="form-label">Teléfono</label>
+              <input type="text" class="form-control" id="telefono" />
+              <div class="invalid-feedback">Ingresa un teléfono válido.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="telefonoAlt" class="form-label">Teléfono alternativo</label>
+              <input type="text" class="form-control" id="telefonoAlt" />
+              <div class="invalid-feedback">Ingresa un teléfono alternativo válido.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="direccion" class="form-label">Dirección postal</label>
+              <input type="text" class="form-control" id="direccion" />
+              <div class="invalid-feedback">Ingresa una dirección postal válida.</div>
+            </div>
+
+            <div class="col-12 mt-4">
+              <button id="btnSubmitForm" type="submit" class="btn btn-primary">
+                Guardar datos y continuar
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- PRODUCTOS -->
+    <section id="shop-section" class="hidden-section">
+      <div class="section-card mb-5">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+          <div>
+            <h2 class="mb-1">PRODUCTOS</h2>
+            <p class="text-muted mb-0">Selecciona tus productos.</p>
+          </div>
+          <button id="btnGoCheckout" class="btn btn-outline-dark" type="button">
+            Ir al carrito / confirmar pedido
+          </button>
+        </div>
+
+        <div id="loader" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-2 text-muted">Cargando productos...</p>
+        </div>
+
+        <div id="productsContainer" class="row g-4"></div>
+      </div>
+    </section>
+
+    <!-- PAGO -->
+    <section id="checkout-section" class="hidden-section">
+      <div class="section-card">
+        <div class="row g-4">
+          <div class="col-lg-7">
+            <h3 class="mb-3">Tu carrito</h3>
+            <div id="cartItemsContainer"></div>
+          </div>
+
+          <div class="col-lg-5">
+            <h3 class="mb-3">Confirmar pedido</h3>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Selecciona un medio de pago</label>
+
+              <div class="d-grid gap-2">
+                <label class="payment-card">
+                  <input
+                    class="form-check-input me-2"
+                    type="radio"
+                    name="paymentMethod"
+                    value="MercadoPago"
+                  />
+                  MercadoPago
+                </label>
+
+                <label class="payment-card">
+                  <input
+                    class="form-check-input me-2"
+                    type="radio"
+                    name="paymentMethod"
+                    value="Efectivo en domicilio"
+                  />
+                  Efectivo en domicilio
+                </label>
+
+                <label class="payment-card">
+                  <input
+                    class="form-check-input me-2"
+                    type="radio"
+                    name="paymentMethod"
+                    value="Tarjeta de crédito"
+                  />
+                  Tarjeta de crédito
+                </label>
+              </div>
+            </div>
+
+            <div class="bg-light rounded p-3 mb-3">
+              <p class="mb-2">
+                <strong>Total de productos:</strong>
+                <span id="checkoutQuantity">0</span>
+              </p>
+              <p class="mb-0">
+                <strong>Total a pagar:</strong>
+                $<span id="checkoutTotal">0.00</span>
+              </p>
+            </div>
+
+            <button id="btnConfirmOrder" class="btn btn-success w-100" type="button">
+              Confirmar pedido
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="script.js"></script>
+</body>
+</html>
