@@ -1,3 +1,4 @@
+const carrito = [];
 document.getElementById("btnSubmitForm").addEventListener("click", function (event) {
     //Validar el formulario
     event.preventDefault();
@@ -98,7 +99,7 @@ async function cargarProductos() {
             `;
 
             const button = col.querySelector("[data-product-id]");
-            button.addEventListener("click", () => addToCart(producto));
+            button.addEventListener("click", () => agregarCarrito(producto));
             contProductos.appendChild(col);
         });
 
@@ -115,4 +116,42 @@ async function cargarProductos() {
 
         document.getElementById("loader").style.display = "none";
     }
+}
+function agregarCarrito(producto)
+{
+    producto.cantidad=1;
+    carrito.push(producto);
+    // pongo los datos en el htmls
+    document.getElementById("pago-section").classList.remove("hidden-section");
+    document.getElementById("listadoCarrito").innerHTML=carrito.map((item)=>` <div class="cart-item">
+            <div class="d-flex gap-3 align-items-center">
+              <img
+                src="${item.image}"
+                alt="${item.name}"
+                width="80"
+                height="80"
+                style="object-fit: cover; border-radius: 10px;"
+              />
+              <div class="flex-grow-1">
+                <h6 class="mb-1">${item.name}</h6>
+                <p class="mb-1 text-muted">Precio unitario: $${Number(item.price).toFixed(2)}</p>
+                <p class="mb-0"><strong>Subtotal:</strong> $${(Number(item.price) * item.cantidad).toFixed(2)}</p>
+              </div>
+              <div class="text-end">
+                <div class="btn-group mb-2">
+                  <button class="btn btn-sm btn-outline-secondary" data-action="decrease" data-id="${item.id}">-</button>
+                  <button class="btn btn-sm btn-outline-dark" disabled>${item.cantidad}</button>
+                  <button class="btn btn-sm btn-outline-dark" disabled>${item.cantidad}</button>
+                  <button class="btn btn-sm btn-outline-secondary" data-action="increase" data-id="${item.id}">+</button>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-danger" data-action="remove" data-id="${item.id}">
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join("")
+    console.log(carrito);
 }
