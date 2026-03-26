@@ -1,12 +1,62 @@
-const carrito = [];
+let carrito = [];
+let total=0;
+let totalProds=0;
+
+const nombre = document.getElementById("nombre");
+const apellido = document.getElementById("apellido");
+const email = document.getElementById("email");
+const telefono = document.getElementById("telefono");
+const telefonoAlt = document.getElementById("telefonoAlt");
+const direccion = document.getElementById("direccion");
+cargarDatos();
+
+document.getElementById("btnIraPagar").addEventListener("click", function () {
+    if(carrito.length){
+        document.getElementById("pago-section").classList.remove("hidden-section");
+        document.getElementById("pago-section").scrollIntoView({ behavior: "smooth" });
+    }else{
+        Swal.fire({
+            title: 'Carrito vacío',
+            text: 'Tu carrito está vacío. Agrega productos para continuar.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar'
+        });
+    }
+});
+document.getElementById("btnPagar").addEventListener("click", function () {
+
+    Swal.fire({
+        title: 'Confirmación de compra',
+        text: carrito.length ? `¿Deseas confirmar tu compra por un total de $${total} con ${document.querySelector('input[name="metodoPago"]:checked').value}?` : 'Tu carrito está vacío. Agrega productos para realizar una compra.',
+        icon: carrito.length ? 'question' : 'warning',
+        confirmButtonText: 'Confirmar',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        allowOutsideClick: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            carrito = [];
+
+            listarProductos();
+
+            document.getElementById("pago-section").classList.add("hidden-section");
+
+            document.getElementById("shop-section").classList.add("hidden-section");
+
+            document.getElementById("form-section").classList.remove("hidden-section");
+            Swal.fire({
+                title: '¡Compra confirmada!',
+                text: 'Gracias por tu compra. Tu pedido ha sido confirmado.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
+        }       
+    });
+});
 document.getElementById("btnSubmitForm").addEventListener("click", function (event) {
     //Validar el formulario
     event.preventDefault();
-    const nombre = document.getElementById("nombre");
-    const apellido = document.getElementById("apellido");
-    const email = document.getElementById("email");
-    const telefono = document.getElementById("telefono");
-    const direccion = document.getElementById("direccion");
+
     let bandera = true
     if (!nombre.value.trim()) {
         nombre.classList.add("is-invalid");
@@ -43,8 +93,17 @@ document.getElementById("btnSubmitForm").addEventListener("click", function (eve
             text: 'Tus datos han sido guardados correctamente.',
             icon: 'success',
             confirmButtonText: 'Aceptar'
-        }).then(() => {
 
+        }).then(() => {
+            //GUARDO LOS DATOS Y ABRO LOS OTROS PANELES
+            guardarDatos({
+                nombre: nombre.value,
+                apellido: apellido.value,
+                email: email.value,
+                telefono: telefono.value,
+                telefonoAlt: telefonoAlt.value,
+                direccion: direccion.value
+            });
             document.getElementById("form-section").classList.add("hidden-section");
             cargarProductos();
             document.getElementById("shop-section").classList.remove("hidden-section");
@@ -53,6 +112,28 @@ document.getElementById("btnSubmitForm").addEventListener("click", function (eve
 
 
 });
+  function guardarDatos(datosUsuario) {
+    localStorage.setItem("DatosUsuario", JSON.stringify(datosUsuario));
+  }
+
+  function cargarDatos() {
+    const datosUsuario = JSON.parse(localStorage.getItem("DatosUsuario"));
+    carrito=JSON.parse(localStorage.getItem("carrito"));
+    console.log(carrito.length);
+    if(carrito.length)
+    {
+            listarProductos();
+    }
+    console.log(datosUsuario);
+    if (!datosUsuario) return;
+
+    nombre.value = datosUsuario.nombre || "";
+    apellido.value = datosUsuario.apellido || "";
+    email.value = datosUsuario.email || "";
+    telefono.value = datosUsuario.telefono || "";
+    telefonoAlt.value = datosUsuario.telefonoAlt || "";
+    direccion.value = datosUsuario.direccion || "";
+  }
 
 function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -119,8 +200,37 @@ async function cargarProductos() {
 }
 function agregarCarrito(producto)
 {
-    producto.cantidad=1;
-    carrito.push(producto);
+  //Verifico si el producto esta en el carrito
+    const existente=carrito.find(prod=>prod.id == producto.id);
+    if(existente){
+        //Si existe le agrego cantidad
+        existente.cantidad+=1;
+    }else{
+        //Si no esta, entonces le agrego una cantidad y lo pongo en el array
+        producto.cantidad=1;
+        carrito.push(producto);
+    }
+    
+    listarProductos();
+    console.log(carrito);
+}
+function listarProductos()
+{
+    total=0;
+    totalProds=0;
+    carrito.forEach((prod)=>{
+        total=(Number(total) + (Number(prod.price) * Number(prod.cantidad))).toFixed(2);
+        totalProds+=prod.cantidad;
+    });
+    if(carrito.length===0){
+        document.getElementById("pago-section").classList.add("hidden-section");
+        document.getElementById("shop-section").scrollIntoView({ behavior: "smooth" });
+    }
+    document.getElementById("ventaCantidad").textContent=totalProds;
+    document.getElementById("ventaTotal").textContent=total;
+    //Guardo
+    localStorage.setItem("carrito",JSON.stringify(carrito));
+    
     // pongo los datos en el htmls
     document.getElementById("pago-section").classList.remove("hidden-section");
     document.getElementById("listadoCarrito").innerHTML=carrito.map((item)=>` <div class="cart-item">
@@ -139,13 +249,12 @@ function agregarCarrito(producto)
               </div>
               <div class="text-end">
                 <div class="btn-group mb-2">
-                  <button class="btn btn-sm btn-outline-secondary" data-action="decrease" data-id="${item.id}">-</button>
+                  <button class="btn btn-sm btn-outline-secondary" onclick="disminuirItem(${item.id})">-</button>
                   <button class="btn btn-sm btn-outline-dark" disabled>${item.cantidad}</button>
-                  <button class="btn btn-sm btn-outline-dark" disabled>${item.cantidad}</button>
-                  <button class="btn btn-sm btn-outline-secondary" data-action="increase" data-id="${item.id}">+</button>
+                  <button class="btn btn-sm btn-outline-secondary" onclick="aumentarItem(${item.id})">+</button>
                 </div>
                 <div>
-                  <button class="btn btn-sm btn-outline-danger" data-action="remove" data-id="${item.id}">
+                  <button class="btn btn-sm btn-outline-danger" onclick="eliminarItem(${item.id})">
                     Eliminar
                   </button>
                 </div>
@@ -153,5 +262,20 @@ function agregarCarrito(producto)
             </div>
           </div>
         `).join("")
-    console.log(carrito);
+}
+function eliminarItem(prodId){
+    carrito=(carrito.filter((prod)=>prod.id!==prodId));;
+    
+    listarProductos();
+}
+function aumentarItem(prodId){
+    producto=carrito.find(prod=>prod.id===prodId);
+    producto.cantidad+=1;
+    listarProductos();
+}
+function disminuirItem(prodId){
+    producto=carrito.find(prod=>prod.id===prodId);
+    producto.cantidad-=1;
+    if (producto.cantidad===0) eliminarItem(prodId);
+    listarProductos();
 }

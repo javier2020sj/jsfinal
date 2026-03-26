@@ -29,27 +29,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarContent">
-        <ul class="navbar-nav ms-auto align-items-lg-center">
-          <li class="nav-item me-3">
-            <a class="nav-link" href="#form-section">Formulario</a>
-          </li>
-          <li class="nav-item me-3">
-            <a class="nav-link" href="#shop-section">Productos</a>
-          </li>
-          <li class="nav-item">
-            <button id="btnCart" class="btn btn-warning position-relative" type="button">
-              Carrito 🛒
-              <span
-                id="cartCount"
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge"
-              >
-                0
-              </span>
-            </button>
-          </li>
-        </ul>
-      </div>
+     
     </div>
   </nav>
 
@@ -122,7 +102,7 @@
             <h2 class="mb-1">PRODUCTOS</h2>
             <p class="text-muted mb-0">Selecciona tus productos.</p>
           </div>
-          <button id="btnGoCheckout" class="btn btn-outline-dark" type="button">
+          <button id="btnIraPagar" class="btn btn-outline-dark" type="button">
             Ir al carrito / confirmar pedido
           </button>
         </div>
@@ -156,7 +136,7 @@
                   <input
                     class="form-check-input me-2"
                     type="radio"
-                    name="paymentMethod"
+                    name="metodoPago"
                     value="MercadoPago"
                   />
                   MercadoPago
@@ -166,7 +146,7 @@
                   <input
                     class="form-check-input me-2"
                     type="radio"
-                    name="paymentMethod"
+                    name="metodoPago"
                     value="Efectivo en domicilio"
                   />
                   Efectivo en domicilio
@@ -176,7 +156,7 @@
                   <input
                     class="form-check-input me-2"
                     type="radio"
-                    name="paymentMethod"
+                    name="metodoPago"
                     value="Tarjeta de crédito"
                   />
                   Tarjeta de crédito
@@ -187,15 +167,15 @@
             <div class="bg-light rounded p-3 mb-3">
               <p class="mb-2">
                 <strong>Total de productos:</strong>
-                <span id="checkoutQuantity">0</span>
+                <span id="ventaCantidad">0</span>
               </p>
               <p class="mb-0">
                 <strong>Total a pagar:</strong>
-                $<span id="checkoutTotal">0.00</span>
+                $<span id="ventaTotal">0.00</span>
               </p>
             </div>
 
-            <button id="btnConfirmOrder" class="btn btn-success w-100" type="button">
+            <button id="btnPagar" class="btn btn-success w-100" type="button">
               Confirmar pedido
             </button>
           </div>
