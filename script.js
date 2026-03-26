@@ -227,12 +227,7 @@ function listarProductos() {
     ).toFixed(2);
     totalProds += prod.cantidad;
   });
-  if (carrito) {
-    document.getElementById("pago-section").classList.add("hidden-section");
-    document
-      .getElementById("shop-section")
-      .scrollIntoView({ behavior: "smooth" });
-  }
+
   document.getElementById("ventaCantidad").textContent = totalProds;
   document.getElementById("ventaTotal").textContent = total;
   //Guardo
