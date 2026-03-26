@@ -11,7 +11,7 @@ const direccion = document.getElementById("direccion");
 cargarDatos();
 
 document.getElementById("btnIraPagar").addEventListener("click", function () {
-    if(carrito.length){
+    if(carrito){
         document.getElementById("pago-section").classList.remove("hidden-section");
         document.getElementById("pago-section").scrollIntoView({ behavior: "smooth" });
     }else{
@@ -119,8 +119,7 @@ document.getElementById("btnSubmitForm").addEventListener("click", function (eve
   function cargarDatos() {
     const datosUsuario = JSON.parse(localStorage.getItem("DatosUsuario"));
     carrito=JSON.parse(localStorage.getItem("carrito"));
-    console.log(carrito.length);
-    if(carrito.length)
+    if(carrito)
     {
             listarProductos();
     }
@@ -222,7 +221,7 @@ function listarProductos()
         total=(Number(total) + (Number(prod.price) * Number(prod.cantidad))).toFixed(2);
         totalProds+=prod.cantidad;
     });
-    if(carrito.length===0){
+    if(carrito){
         document.getElementById("pago-section").classList.add("hidden-section");
         document.getElementById("shop-section").scrollIntoView({ behavior: "smooth" });
     }
